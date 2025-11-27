@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'HEXAGONE | L'Héritage. La Nation. L'Avenir.</title>
+    
+    <!-- Polices (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#800020',   // Bordeaux
+                        secondary: '#E8C547', // Doré
+                        surface: '#FDFBF7',   // Papier
+                        text: '#0F172A',      // Bleu Nuit
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Icônes Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Effet de grain subtil sur le fond papier */
+        .bg-grain {
+            background-color: #FDFBF7;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+        
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #800020;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Markdown style simple pour la réponse IA */
+        .prose p { margin-bottom: 0.75em; }
+        .prose strong { font-weight: 700; color: #800020; }
+    </style>
+</head>
+<body class="bg-grain text-text font-sans antialiased selection:bg-secondary selection:text-primary">
+
+    <!-- NAVIGATION (Fond opaque pour éviter la transparence au scroll) -->
+    <nav class="sticky top-0 z-50 bg-surface border-b border-primary/10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            
+            <!-- GROUPE GAUCHE : Burger + Logo + Menu -->
+            <div class="flex items-center gap-6 md:gap-8">
+                <!-- Menu Burger (Mobile) -->
+                <button class="md:hidden text-text">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <!-- LOGO (Aligné à gauche) -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg shadow-lg">
+                         <!-- SVG Logo Blanc -->
+                         <svg viewBox="0 0 100 115" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M50 5 L93 30 L93 80 L50 105 L7 80 L7 30 Z" />
+                            <path d="M25 40 L75 25 L85 75 L35 95 L15 50 Z" />
+                            <path d="M35 55 L65 45 L70 70 L45 80 Z" />
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-black tracking-tighter hidden lg:block text-primary">L'HEXAGONE</span>
+                </a>
+
+                <!-- Navigation Links (Desktop) -->
+                <div class="hidden md:flex gap-8 text-sm font-bold uppercase tracking-wider text-text/80 border-l border-slate-300 pl-8 h-6 items-center">
+                    <a href="podcast.html" class="hover:text-primary transition-colors hover-underline-animation">Podcast</a>
+                    <a href="/articles.html" class="hover:text-primary transition-colors hover-underline-animation">Articles</a>
+                    <a href="/charte-hexagone.html" class="hover:text-primary transition-colors hover-underline-animation">Charte Graphique</a>
+                </div>
+            </div>
+
+            <!-- Actions Droite -->
+            <div class="flex items-center gap-4">
+                <button class="hidden md:flex items-center gap-2 text-sm font-bold uppercase hover:text-primary">
+                    <i data-lucide="search" class="w-4 h-4"></i> Recherche
+                </button>
+                <div class="h-6 w-px bg-slate-300 hidden md:block"></div>
+                <a href="#abonnement" class="bg-primary text-white px-6 py-2.5 rounded text-xs font-black uppercase tracking-widest hover:bg-red-900 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                    S'abonner
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION (À LA UNE) -->
+    <header class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Article Principal (8 colonnes) -->
+            <div class="lg:col-span-8 group cursor-pointer">
+                <div class="relative overflow-hidden rounded-2xl shadow-xl aspect-[16/9] mb-6">
+                    <img src="https://images.unsplash.com/photo-1575320181282-9afab399332c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Drapeau France" class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute top-6 left-6">
+                        <span class="bg-secondary text-text px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm shadow-lg">
+                            Édition Spéciale
+                        </span>
+                    </div>
+                    <div class="absolute bottom-8 left-8 right-8 text-white">
+                        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black uppercase leading-[0.95] mb-4 drop-shadow-lg">
+                            La Nation face à <br/>son <span class="text-secondary">Destin</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-slate-200 font-medium max-w-2xl border-l-4 border-secondary pl-4">
+                            Enquête exclusive sur les nouveaux mouvements souverainistes qui redessinent la carte politique européenne.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Édito & Fil Info (4 colonnes) -->
+            <div class="lg:col-span-4 flex flex-col gap-8 h-full">
+                
+                <!-- Bloc Édito -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full -mr-4 -mt-4"></div>
+                    <span class="text-xs font-bold uppercase text-primary tracking-widest mb-4 block flex items-center gap-2">
+                        <i data-lucide="pen-tool" class="w-3 h-3"></i> L'Édito
+                    </span>
+                    <h2 class="text-2xl font-black uppercase mb-4 leading-tight">La fin de la naïveté</h2>
+                    <p class="text-slate-600 mb-6 text-sm leading-relaxed text-justify">
+                        "Il est temps de regarder la réalité en face. La politique n'est pas l'art du possible, mais l'art de rendre possible ce qui est nécessaire pour la survie de la nation."
+                    </p>
+                    <div class="flex items-center gap-3 border-t border-slate-100 pt-4">
+                        <div class="w-10 h-10 bg-slate-200 rounded-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover grayscale">
+                        </div>
+                        <div>
+                            <span class="block text-xs font-black uppercase">Jean-Marc D.</span>
+                            <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Directeur de la rédaction</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fil Info Rapide -->
+                <div class="flex-1 space-y-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                        <h3 class="font-black text-sm uppercase">En continu</h3>
+                    </div>
+                    
+                    <a href="#" class="block group border-b border-slate-200 pb-3 last:border-0">
+                        <span class="text-[10px] font-bold text-slate-400">14:30 • Politique</span>
+                        <h4 class="font-bold text-sm group-hover:text-primary transition-colors leading-snug mt-1">
+                            Budget 2025 : Le bras de fer commence à l'Assemblée.
+                        </h4>
+                    </a>
+                    <a href="#" class="block group border-b border-slate-200 pb-3 last:border-0">
+                        <span class="text-[10px] font-bold text-slate-400">12:15 • Économie</span>
+                        <h4 class="font-bold text-sm group-hover:text-primary transition-colors leading-snug mt-1">
+                            Industrie : Ces usines qui reviennent en France.
+                        </h4>
+                    </a>
+                    <a href="#" class="block group border-b border-slate-200 pb-3 last:border-0">
+                        <span class="text-[10px] font-bold text-slate-400">10:00 • Culture</span>
+                        <h4 class="font-bold text-sm group-hover:text-primary transition-colors leading-snug mt-1">
+                            Patrimoine : Record de dons pour la restauration des églises.
+                        </h4>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION IA: LE DÉCODEUR (CORRIGÉ) -->
+    <section class="max-w-5xl mx-auto px-6 py-12 mb-12">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 relative">
+            <!-- Décoration de fond (Position ajustée : -top-12 -right-12 pour ne pas chevaucher l'input) -->
+            <div class="absolute -top-12 -right-12 p-0 opacity-5 pointer-events-none">
+                <svg viewBox="0 0 100 115" class="w-80 h-80 text-primary" fill="currentColor">
+                    <path d="M50 5 L93 30 L93 80 L50 105 L7 80 L7 30 Z" />
+                </svg>
+            </div>
+
+            <div class="p-8 md:p-12 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div>
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-secondary/20 text-yellow-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> Intelligence Artificielle
+                        </span>
+                        <h2 class="text-3xl md:text-4xl font-black uppercase text-text leading-none">
+                            Le Décodeur <span class="text-primary">Politique</span>
+                        </h2>
+                        <p class="text-slate-500 mt-2 max-w-lg">
+                            Entrez un sujet d'actualité ou une "petite phrase". Notre IA analyse les faits et vous livre une lecture sans concession, fidèle à la ligne de L'Hexagone.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Zone d'interaction (Z-index assuré) -->
+                <div class="bg-surface rounded-xl p-2 border border-slate-200 shadow-inner flex flex-col md:flex-row gap-2 relative z-20">
+                    <input type="text" id="topicInput" placeholder="Ex: La réforme des retraites, Discours du Premier Ministre..." 
+                        class="flex-1 bg-transparent px-4 py-4 text-text font-medium placeholder-slate-400 focus:outline-none text-lg">
+                    <button onclick="generateAnalysis()" id="generateBtn" class="bg-primary text-white px-8 py-4 rounded-lg font-black uppercase tracking-widest hover:bg-red-900 transition-all shadow-md flex items-center justify-center gap-2 group">
+                        <span id="btnText">Décrypter</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+
+                <!-- Zone de résultat -->
+                <div id="resultArea" class="mt-8 hidden">
+                    <div class="border-l-4 border-secondary pl-6 py-2">
+                        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest mb-2">L'Analyse de la Rédaction</h3>
+                        <div id="aiOutput" class="prose prose-slate max-w-none text-lg font-medium leading-relaxed text-text">
+                            <!-- Le texte généré ira ici -->
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="copyToClipboard()" class="text-xs font-bold uppercase text-slate-400 hover:text-primary flex items-center gap-2 transition-colors">
+                            <i data-lucide="copy" class="w-3 h-3"></i> Copier l'analyse
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Message d'erreur -->
+                <div id="errorMsg" class="mt-4 hidden text-red-600 text-sm font-bold bg-red-50 p-3 rounded border border-red-100"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANDEAU SLOGAN -->
+    <div class="bg-primary text-white py-4 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center text-xs md:text-sm font-bold uppercase tracking-[0.2em]">
+            <span>L'Héritage</span>
+            <span class="text-secondary">•</span>
+            <span>La Nation</span>
+            <span class="text-secondary">•</span>
+            <span>L'Avenir</span>
+        </div>
+    </div>
+
+    <!-- GRILLE ARTICLES -->
+    <section class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-4xl font-black uppercase text-text flex items-center gap-3">
+                <span class="w-3 h-8 bg-secondary block"></span>
+                Dernières Analyses
+            </h2>
+            <a href="#" class="text-xs font-bold uppercase tracking-widest hover:text-primary flex items-center gap-1">
+                Voir tout <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Article 1 -->
+            <article class="group cursor-pointer">
+                <div class="overflow-hidden rounded-xl mb-4 relative">
+                    <img src="img/mihail-macri-gq-IUqXTvB4-unsplash.jpg" class="w-full h-56 object-cover transform transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-2 py-1 text-[10px] font-black uppercase">Agriculture</span>
+                </div>
+                <h3 class="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
+                    Colère paysanne : pourquoi le mouvement va durcir
+                </h3>
+                <p class="text-slate-500 text-sm line-clamp-2 mb-3">
+                    Malgré les annonces du gouvernement, la base reste mobilisée. Reportage au cœur des barrages.
+                </p>
+                <span class="text-[10px] font-bold uppercase text-primary flex items-center gap-1">
+                    Lire l'article <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                </span>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="group cursor-pointer">
+                <div class="overflow-hidden rounded-xl mb-4 relative">
+                    <img src="img/kenny-eliason-zFSo6bnZJTw-unsplash.jpg" class="w-full h-56 object-cover transform transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-2 py-1 text-[10px] font-black uppercase">Société</span>
+                </div>
+                <h3 class="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
+                    École : le retour de l'autorité est-il possible ?
+                </h3>
+                <p class="text-slate-500 text-sm line-clamp-2 mb-3">
+                    L'uniforme ne suffit pas. C'est tout le rapport au savoir et au maître qu'il faut repenser.
+                </p>
+                <span class="text-[10px] font-bold uppercase text-primary flex items-center gap-1">
+                    Lire l'article <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                </span>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="group cursor-pointer">
+                <div class="overflow-hidden rounded-xl mb-4 relative">
+                    <img src="img/maksym-kaharlytskyi-u13zBF4r56A-unsplash.jpg" class="w-full h-56 object-cover transform transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-2 py-1 text-[10px] font-black uppercase">Économie</span>
+                </div>
+                <h3 class="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
+                    La réindustrialisation, seul chemin vers la souveraineté
+                </h3>
+                <p class="text-slate-500 text-sm line-clamp-2 mb-3">
+                    Produire en France n'est plus une option, c'est une nécessité stratégique vitale.
+                </p>
+                <span class="text-[10px] font-bold uppercase text-primary flex items-center gap-1">
+                    Lire l'article <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                </span>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- SECTION ABONNEMENT / NEWSLETTER -->
+    <section id="abonnement" class="bg-text text-white py-20 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0 100 L100 0 L100 100 Z" fill="#800020" />
+            </svg>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-6 shadow-xl shadow-primary/30">
+                <i data-lucide="mail" class="w-8 h-8 text-white"></i>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black uppercase mb-4">La Matinale</h2>
+            <p class="text-slate-300 text-lg mb-8 max-w-lg mx-auto">
+                Chaque matin, recevez l'essentiel de l'information analysée par nos experts. Sans bruit, sans fureur, juste les faits et le fond.
+            </p>
+
+            <form class="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
+                <input type="email" placeholder="Votre adresse email" class="flex-1 px-6 py-4 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-secondary">
+                <button type="button" class="bg-secondary text-text px-8 py-4 rounded-lg font-black uppercase tracking-widest hover:bg-white transition-colors">
+                    S'inscrire
+                </button>
+            </form>
+            <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-widest">Désinscription possible à tout moment.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-surface border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Colonne Marque -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-primary flex items-center justify-center rounded shadow">
+                            <svg viewBox="0 0 100 115" class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M50 5 L93 30 L93 80 L50 105 L7 80 L7 30 Z" />
+                                <path d="M25 40 L75 25 L85 75 L35 95 L15 50 Z" />
+                                <path d="M35 55 L65 45 L70 70 L45 80 Z" />
+                            </svg>
+                        </div>
+                        <span class="text-xl font-black text-text">L'HEXAGONE</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed max-w-sm">
+                        Média indépendant d'opinion et d'actualité. Nous défendons une vision enracinée et souveraine de la France dans le monde de demain.
+                    </p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+
+                <!-- Liens Rapides -->
+                <div>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-6 text-primary">Rubriques</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-primary">Politique</a></li>
+                        <li><a href="#" class="hover:text-primary">Société</a></li>
+                        <li><a href="#" class="hover:text-primary">Économie</a></li>
+                        <li><a href="#" class="hover:text-primary">International</a></li>
+                        <li><a href="#" class="hover:text-primary">Culture & Art de vivre</a></li>
+                    </ul>
+                </div>
+
+                <!-- Infos Légales -->
+                <div>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-6 text-primary">L'Entreprise</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-primary">Qui sommes-nous ?</a></li>
+                        <li><a href="#" class="hover:text-primary">Charte déontologique</a></li>
+                        <li><a href="#" class="hover:text-primary">Recrutement</a></li>
+                        <li><a href="#" class="hover:text-primary">Mentions légales</a></li>
+                        <li><a href="#" class="hover:text-primary">CGV</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium">
+                <p>&copy; 2025 L'Hexagone Media. Tous droits réservés.</p>
+                <p>Conçu avec rigueur et passion.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIQUE DU DÉCODEUR IA -->
+    <script>
+        // Initialisation des icônes
+        lucide.createIcons();
+
+        // Configuration API Gemini
+        // IMPORTANT : En exportant ce fichier, cette variable sera vide.
+        // Pour faire fonctionner le Décodeur Politique en local, obtenez une clé sur https://aistudio.google.com/
+        // et collez-la ci-dessous :
+        const apiKey = ""; // <--- COLLEZ VOTRE CLÉ API ICI (ex: "AlzaSy...")
+
+        async function generateAnalysis() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const resultArea = document.getElementById('resultArea');
+            const outputDiv = document.getElementById('aiOutput');
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Check if API key is missing
+            if (!apiKey) {
+                alert("Clé API manquante ! Ouvrez le fichier index.html dans un éditeur et ajoutez votre clé API Gemini.");
+                return;
+            }
+
+            // Validation simple
+            if (!topic) {
+                alert("Veuillez entrer un sujet ou une citation.");
+                return;
+            }
+
+            // État de chargement
+            btn.disabled = true;
+            btnText.textContent = "Analyse en cours...";
+            btn.classList.add('opacity-75');
+            errorMsg.classList.add('hidden');
+            resultArea.classList.add('hidden');
+
+            try {
+                // Appel à Gemini
+                const prompt = `Tu es un éditorialiste politique senior pour le média 'L'Hexagone'. 
+                Ton style est : souverainiste, de droite conservatrice, franc, incisif, sérieux et très structuré.
+                Tâche : Rédige une analyse très courte (max 80 mots) et percutante sur ce sujet : "${topic}".
+                Fais ressortir les enjeux cachés ou la réalité derrière la communication. Sois direct.`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                const aiText = data.candidates[0].content.parts[0].text;
+
+                // Affichage du résultat
+                outputDiv.innerHTML = aiText.replace(/\n/g, '<br>'); // Simple formatage
+                resultArea.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error("Erreur Gemini:", error);
+                errorMsg.textContent = "Erreur : " + error.message;
+                errorMsg.classList.remove('hidden');
+            } finally {
+                // Rétablissement du bouton
+                btn.disabled = false;
+                btnText.textContent = "Décrypter";
+                btn.classList.remove('opacity-75');
+            }
+        }
+
+        // Fonction utilitaire pour copier
+        function copyToClipboard() {
+            const text = document.getElementById('aiOutput').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Analyse copiée dans le presse-papier !");
+        }
+
+        // Permettre la touche "Entrée"
+        document.getElementById('topicInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                generateAnalysis();
+            }
+        });
+    </script>
+</body>
+</html>

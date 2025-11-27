@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Articles | L'HEXAGONE</title>
+    
+    <!-- Polices (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#800020',   // Bordeaux
+                        secondary: '#E8C547', // Doré
+                        surface: '#FDFBF7',   // Papier
+                        text: '#0F172A',      // Bleu Nuit
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Icônes Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Grain de fond */
+        .bg-grain {
+            background-color: #FDFBF7;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        :root {
+            --color-primary: #800020;
+            --color-secondary: #E8C547;
+            --color-surface: #FDFBF7;
+            --color-text: #0F172A;
+        }
+
+        body {
+            selection-background-color: var(--color-secondary);
+            selection-color: var(--color-primary);
+        }
+
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #800020;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Styles spécifiques au Modal */
+        #articleModal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #articleModal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #articleModal:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Scrollbar personnalisée pour le conteneur de défilement */
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-grain text-text font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- NAVIGATION (Correction: z-40 -> z-50 pour passer au-dessus de tout le contenu) -->
+    <nav class="sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-primary/10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            
+            <div class="flex items-center gap-4 md:gap-8 flex-1 md:flex-none">
+                <!-- Menu Burger (Mobile) -->
+                <button class="md:hidden text-text shrink-0">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <!-- LOGO (Lien Accueil) -->
+                <a href="index.html" class="flex items-center gap-3 group shrink-0">
+                    <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg shadow-lg group-hover:bg-red-900 transition-colors">
+                         <!-- SVG Logo Blanc -->
+                         <svg viewBox="0 0 100 115" class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M50 5 L93 30 L93 80 L50 105 L7 80 L7 30 Z" />
+                            <path d="M25 40 L75 25 L85 75 L35 95 L15 50 Z" />
+                            <path d="M35 55 L65 45 L70 70 L45 80 Z" />
+                        </svg>
+                    </div>
+                    <span class="text-xl md:text-2xl font-black tracking-tighter hidden lg:block text-primary">L'HEXAGONE</span>
+                </a>
+
+                <!-- Liens Navigation -->
+                <div class="hidden md:flex gap-6 lg:gap-8 text-sm font-bold uppercase tracking-wider text-text/80 border-l border-slate-300 pl-6 lg:pl-8 h-6 items-center whitespace-nowrap">
+                    <a href="podcast.html" class="hover:text-primary transition-colors hover-underline-animation">Podcast</a>
+                    <!-- Lien Actif -->
+                    <a href="articles.html" class="text-primary font-black hover-underline-animation">Articles</a>
+                    <a href="charte-hexagone.html" class="hover:text-primary transition-colors hover-underline-animation">Charte Graphique</a>
+                </div>
+            </div>
+
+            <!-- Actions Droite -->
+            <div class="flex items-center gap-4 shrink-0">
+                <button class="hidden lg:flex items-center gap-2 text-sm font-bold uppercase hover:text-primary">
+                    <i data-lucide="search" class="w-4 h-4"></i> Recherche
+                </button>
+                <div class="h-6 w-px bg-slate-300 hidden lg:block"></div>
+                <a href="index.html#abonnement" class="bg-primary text-white px-4 md:px-6 py-2.5 rounded text-xs font-black uppercase tracking-widest hover:bg-red-900 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 whitespace-nowrap">
+                    S'abonner
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-grow max-w-7xl mx-auto px-6 py-12 md:py-16">
+
+        <!-- En-tête de Section -->
+        <header class="mb-16 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6 border border-slate-200 bg-white text-slate-500">
+                <i data-lucide="newspaper" class="w-3 h-3"></i> L'Actualité Décryptée
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-8 text-text uppercase">
+                Nos Articles
+            </h1>
+            
+            <!-- Filtres (Mise à jour avec ID et classes pour JS) -->
+            <div id="filters" class="flex flex-wrap justify-center gap-3 md:gap-4">
+                <button data-filter="all" class="filter-btn px-5 py-2 bg-primary text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-md hover:bg-red-900 transition-colors">Tout voir</button>
+                <button data-filter="Politique" class="filter-btn px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:text-primary transition-colors">Politique</button>
+                <button data-filter="Société" class="filter-btn px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:text-primary transition-colors">Société</button>
+                <button data-filter="Économie" class="filter-btn px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:text-primary transition-colors">Économie</button>
+                <button data-filter="International" class="filter-btn px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:text-primary transition-colors">International</button>
+                <button data-filter="Culture" class="filter-btn px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-slate-50 hover:text-primary transition-colors">Culture</button>
+            </div>
+        </header>
+
+        <!-- ARTICLE À LA UNE (Hero) -->
+        <section class="mb-20">
+            <!-- Ajout de la classe 'filterable-item' pour le filtrage -->
+            <div onclick="openArticle(this)" 
+                 class="filterable-item group relative rounded-3xl overflow-hidden shadow-2xl aspect-[16/9] md:aspect-[21/9] cursor-pointer"
+                 data-title="IA et Fake News : Comment protéger l’information en France"
+                 data-category="Société"
+                 data-image="img/Gemini_Generated_Image_u45k53u45k53u45k.png"
+                 data-date="27 Nov. 2025"
+                 data-readtime="8 min"
+                 data-intro="                            Découvrez comment l’intelligence artificielle facilite la création et la diffusion de fake news et quelles stratégies adopter pour rester informé et vigilant.
+">
+                
+                <img src="img/Gemini_Generated_Image_u45k53u45k53u45k.png" alt="Featured" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                
+                <!-- TAG À LA UNE (Correction: Ajout z-10 pour empilement correct) -->
+                <div class="absolute top-6 left-6 md:top-10 md:left-10 z-10">
+                    <span class="bg-secondary text-text px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-sm shadow-lg">
+                        À la Une
+                    </span>
+                </div>
+
+                <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 z-10">
+                    <div class="max-w-4xl">
+                        <div class="flex items-center gap-4 text-white/80 text-xs font-bold uppercase tracking-wider mb-3">
+                            <span><i data-lucide="clock" class="w-3 h-3 inline mr-1"></i> 8 min de lecture</span>
+                            <span class="w-1 h-1 bg-white rounded-full"></span>
+                            <span>Société</span>
+                        </div>
+                        <h2 class="text-3xl md:text-5xl lg:text-6xl font-black text-white uppercase leading-none mb-4 drop-shadow-lg">
+                            IA et Fake News :<br/>Comment protéger l’information en France
+                        </h2>
+                        <p class="text-slate-200 text-lg md:text-xl font-medium line-clamp-2 md:line-clamp-none border-l-4 border-secondary pl-4 max-w-2xl">
+                            Découvrez comment l’intelligence artificielle facilite la création et la diffusion de fake news et quelles stratégies adopter pour rester informé et vigilant.
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GRILLE D'ARTICLES -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+
+            <!-- Article 1 -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full"
+                     data-title="Souveraineté numérique : l'Europe a-t-elle déjà perdu la bataille ?"
+                     data-category="Politique"
+                     data-image="img/Gemini_Generated_Image_u45k53u45k53u45k.png"
+                     data-date="26 Nov. 2025"
+                     data-readtime="5 min"
+                     data-intro="Alors que les géants américains et chinois dominent l'IA, le vieux continent tente de réguler ce qu'il ne produit pas. Une stratégie suicidaire ?">
+                
+                <div class="overflow-hidden rounded-2xl mb-5 relative aspect-[3/2] shadow-md">
+                    <img src="img/Gemini_Generated_Image_u45k53u45k53u45k.png" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-3 py-1 text-[10px] font-black uppercase shadow-sm">Politique</span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-slate-400 mb-2">
+                        <span>26 Nov. 2025</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>5 min</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Souveraineté numérique : l'Europe a-t-elle déjà perdu la bataille ?
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        Alors que les géants américains et chinois dominent l'IA, le vieux continent tente de réguler ce qu'il ne produit pas. Une stratégie suicidaire ?
+                    </p>
+                    <span class="text-xs font-bold uppercase text-primary flex items-center gap-1 mt-auto group-hover:underline decoration-2 underline-offset-4">
+                        Lire l'analyse <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full"
+                     data-title="Dette publique : le mur de la réalité se rapproche"
+                     data-category="Économie"
+                     data-image="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     data-date="25 Nov. 2025"
+                     data-readtime="7 min"
+                     data-intro="Les taux remontent, la charge de la dette explose. L'heure des choix douloureux a sonné pour un État-providence à bout de souffle.">
+                
+                <div class="overflow-hidden rounded-2xl mb-5 relative aspect-[3/2] shadow-md">
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-3 py-1 text-[10px] font-black uppercase shadow-sm">Économie</span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-slate-400 mb-2">
+                        <span>25 Nov. 2025</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>7 min</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Dette publique : le mur de la réalité se rapproche
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        Les taux remontent, la charge de la dette explose. L'heure des choix douloureux a sonné pour un État-providence à bout de souffle.
+                    </p>
+                    <span class="text-xs font-bold uppercase text-primary flex items-center gap-1 mt-auto group-hover:underline decoration-2 underline-offset-4">
+                        Lire l'analyse <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full"
+                     data-title="Le beau est-il de droite ? Enquête sur le retour du classicisme"
+                     data-category="Culture"
+                     data-image="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     data-date="24 Nov. 2025"
+                     data-readtime="6 min"
+                     data-intro="Architecture, urbanisme, art : face à la laideur standardisée, une nouvelle génération d'artistes revendique l'héritage et l'harmonie.">
+                
+                <div class="overflow-hidden rounded-2xl mb-5 relative aspect-[3/2] shadow-md">
+                    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-3 py-1 text-[10px] font-black uppercase shadow-sm">Culture</span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-slate-400 mb-2">
+                        <span>24 Nov. 2025</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>6 min</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Le beau est-il de droite ? Enquête sur le retour du classicisme
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        Architecture, urbanisme, art : face à la laideur standardisée, une nouvelle génération d'artistes revendique l'héritage et l'harmonie.
+                    </p>
+                    <span class="text-xs font-bold uppercase text-primary flex items-center gap-1 mt-auto group-hover:underline decoration-2 underline-offset-4">
+                        Lire l'analyse <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </article>
+
+            <!-- Article 4 -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full"
+                     data-title="Afrique : la France doit-elle assumer son retrait ?"
+                     data-category="International"
+                     data-image="https://images.unsplash.com/photo-1526948531399-320e7e40f0ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     data-date="23 Nov. 2025"
+                     data-readtime="10 min"
+                     data-intro="Après la fin de la Françafrique, quel nouveau partenariat bâtir sans naïveté ni repentance éternelle ?">
+                
+                <div class="overflow-hidden rounded-2xl mb-5 relative aspect-[3/2] shadow-md">
+                    <img src="https://images.unsplash.com/photo-1526948531399-320e7e40f0ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-3 py-1 text-[10px] font-black uppercase shadow-sm">International</span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-slate-400 mb-2">
+                        <span>23 Nov. 2025</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>10 min</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Afrique : la France doit-elle assumer son retrait ?
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        Après la fin de la Françafrique, quel nouveau partenariat bâtir sans naïveté ni repentance éternelle ?
+                    </p>
+                    <span class="text-xs font-bold uppercase text-primary flex items-center gap-1 mt-auto group-hover:underline decoration-2 underline-offset-4">
+                        Lire l'analyse <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </article>
+
+            <!-- Article 5 -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full"
+                     data-title="Démographie : le grand tabou français"
+                     data-category="Société"
+                     data-image="https://images.unsplash.com/photo-1505664194779-8beaceb93744?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     data-date="22 Nov. 2025"
+                     data-readtime="4 min"
+                     data-intro="La baisse de la natalité n'est pas une fatalité. Quelles politiques familiales pour relancer le dynamisme français ?">
+                
+                <div class="overflow-hidden rounded-2xl mb-5 relative aspect-[3/2] shadow-md">
+                    <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <span class="absolute top-4 left-4 bg-white text-text px-3 py-1 text-[10px] font-black uppercase shadow-sm">Société</span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-slate-400 mb-2">
+                        <span>22 Nov. 2025</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>4 min</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Démographie : le grand tabou français
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        La baisse de la natalité n'est pas une fatalité. Quelles politiques familiales pour relancer le dynamisme français ?
+                    </p>
+                    <span class="text-xs font-bold uppercase text-primary flex items-center gap-1 mt-auto group-hover:underline decoration-2 underline-offset-4">
+                        Lire l'analyse <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </article>
+
+            <!-- Article 6 (Opinion) -->
+            <article onclick="openArticle(this)"
+                     class="filterable-item group cursor-pointer flex flex-col h-full bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden"
+                     data-title="On ne gouverne pas par des sondages, mais par des convictions"
+                     data-category="L'Opinion"
+                     data-image=""
+                     data-date="21 Nov. 2025"
+                     data-readtime="3 min"
+                     data-intro="La politique moderne est devenue une gestion de l'opinion à court terme. Il est urgent de retrouver le temps long de l'Histoire.">
+                
+                <div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+                <div class="mb-4">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">L'Opinion</span>
+                </div>
+                <h3 class="text-2xl font-black leading-none mb-4 text-primary italic">
+                    "On ne gouverne pas par des sondages, mais par des convictions."
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
+                    La politique moderne est devenue une gestion de l'opinion à court terme. Il est urgent de retrouver le temps long de l'Histoire.
+                </p>
+                <div class="flex items-center gap-3 mt-auto border-t border-slate-100 pt-4">
+                    <div class="w-8 h-8 bg-slate-200 rounded-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xs font-bold uppercase text-text">Marc V.</span>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Pagination / Load More -->
+        <div class="mt-20 flex justify-center">
+            <button class="group flex items-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-full text-xs font-black uppercase tracking-widest text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm hover:shadow-lg">
+                Charger plus d'articles
+                <i data-lucide="refresh-cw" class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-surface border-t border-slate-200 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Colonne Marque -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-primary flex items-center justify-center rounded shadow">
+                            <svg viewBox="0 0 100 115" class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M50 5 L93 30 L93 80 L50 105 L7 80 L7 30 Z" />
+                                <path d="M25 40 L75 25 L85 75 L35 95 L15 50 Z" />
+                                <path d="M35 55 L65 45 L70 70 L45 80 Z" />
+                            </svg>
+                        </div>
+                        <span class="text-xl font-black text-text">L'HEXAGONE</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed max-w-sm">
+                        Média indépendant d'opinion et d'actualité. Nous défendons une vision enracinée et souveraine de la France dans le monde de demain.
+                    </p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+
+                <!-- Liens Rapides -->
+                <div>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-6 text-primary">Rubriques</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-primary">Politique</a></li>
+                        <li><a href="#" class="hover:text-primary">Société</a></li>
+                        <li><a href="#" class="hover:text-primary">Économie</a></li>
+                        <li><a href="#" class="hover:text-primary">International</a></li>
+                        <li><a href="#" class="hover:text-primary">Culture & Art de vivre</a></li>
+                    </ul>
+                </div>
+
+                <!-- Infos Légales -->
+                <div>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-6 text-primary">L'Entreprise</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-primary">Qui sommes-nous ?</a></li>
+                        <li><a href="#" class="hover:text-primary">Charte déontologique</a></li>
+                        <li><a href="#" class="hover:text-primary">Recrutement</a></li>
+                        <li><a href="#" class="hover:text-primary">Mentions légales</a></li>
+                        <li><a href="#" class="hover:text-primary">CGV</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium">
+                <p>&copy; 2025 L'Hexagone Media. Tous droits réservés.</p>
+                <p>Conçu avec rigueur et passion.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL ARTICLE (Z-INDEX 1000 et Bouton Amélioré) -->
+    <div id="articleModal" class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden" onclick="if(event.target === this) closeModal()">
+        <div class="relative w-full max-w-4xl h-[70vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-all scale-95 opacity-0" id="modalContainer">
+            
+            <!-- Bouton Fermer Amélioré -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 p-2 bg-white hover:bg-slate-100 text-slate-800 rounded-full shadow-lg transition-all hover:scale-105 border border-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Conteneur défilant unique (Image + Contenu) -->
+            <div class="flex-1 overflow-y-auto scroll-container">
+                
+                <!-- Image de couverture (Dans le flux de défilement) -->
+                <div class="h-48 md:h-64 w-full relative bg-slate-200">
+                    <img id="modalImage" src="" alt="Cover" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <span id="modalCategory" class="absolute bottom-4 left-6 md:left-10 bg-secondary text-text px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm shadow-md">
+                        Catégorie
+                    </span>
+                </div>
+
+                <!-- Contenu -->
+                <div class="p-6 md:p-10">
+                    <div class="max-w-2xl mx-auto">
+                        
+                        <!-- En-tête -->
+                        <div class="flex items-center gap-4 text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">
+                            <span id="modalDate">Date</span>
+                            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                            <span id="modalReadTime">Temps</span>
+                        </div>
+
+                        <h2 id="modalTitle" class="text-3xl md:text-4xl font-black text-text uppercase leading-tight mb-6">
+                            Titre de l'article
+                        </h2>
+
+                        <p id="modalIntro" class="text-lg md:text-xl font-medium text-slate-700 mb-8 border-l-4 border-primary pl-6 italic">
+                            Intro
+                        </p>
+
+                        <!-- Corps du texte -->
+                        <div id="modalBody" class="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-4">
+                            <!-- Contenu injecté par JS -->
+                        </div>
+
+                        <!-- Auteur -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full"></div>
+                            <div>
+                                <span class="block text-sm font-black text-text uppercase">La Rédaction</span>
+                                <span class="block text-xs text-slate-400 uppercase tracking-wider">L'Hexagone</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // ------------------------------------------------
+        // LOGIQUE DE FILTRAGE
+        // ------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const filterableItems = document.querySelectorAll('.filterable-item');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 1. Mise à jour du style des boutons
+                    filterButtons.forEach(btn => {
+                        // Reset style inactif
+                        btn.classList.remove('bg-primary', 'text-white', 'shadow-md', 'hover:bg-red-900');
+                        btn.classList.add('bg-white', 'border', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'hover:text-primary');
+                    });
+                    // Style actif sur le bouton cliqué
+                    button.classList.remove('bg-white', 'border', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'hover:text-primary');
+                    button.classList.add('bg-primary', 'text-white', 'shadow-md', 'hover:bg-red-900');
+
+                    // 2. Filtrage des articles
+                    const filterValue = button.getAttribute('data-filter');
+                    
+                    filterableItems.forEach(item => {
+                        const category = item.getAttribute('data-category');
+                        
+                        // Si 'all' ou correspondance exacte
+                        if (filterValue === 'all' || filterValue === category) {
+                            item.classList.remove('hidden');
+                            // Petite animation d'apparition (optionnel)
+                            item.animate([
+                                { opacity: 0, transform: 'translateY(10px)' },
+                                { opacity: 1, transform: 'translateY(0)' }
+                            ], {
+                                duration: 300,
+                                easing: 'ease-out'
+                            });
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        });
+
+        // ------------------------------------------------
+        // DONNÉES FICTIVES & MODAL
+        // ------------------------------------------------
+        const dummyContent = `
+    <h3 class="text-2xl font-bold text-text mb-6 mt-2">Quand la technologie brouille les repères</h3>
+
+    <p>L’intelligence artificielle transforme tous les aspects de notre vie quotidienne, de la santé aux transports, en passant par l’éducation et la communication. Elle offre des outils puissants, capables de générer du texte, des images, des vidéos ou même des voix. Si ces innovations peuvent faciliter la vie, elles ouvrent également la porte à un phénomène inquiétant : la prolifération des fake news, des informations fausses ou manipulées, de plus en plus crédibles et difficiles à détecter.</p>
+    <p>Aujourd’hui, il est devenu presque impossible pour un citoyen ordinaire de savoir immédiatement si une information est vraie ou falsifiée. Les réseaux sociaux, conçus pour capter notre attention et maximiser l’engagement, amplifient ce phénomène. Cette combinaison entre intelligence artificielle et algorithmes de recommandation crée un environnement où la désinformation peut se propager en quelques minutes à l’échelle nationale, voire internationale.</p>
+
+    <h4 class="text-lg font-bold text-text mt-8 mb-3 uppercase border-l-4 border-primary pl-3">L’IA, une usine à fausses informations</h4>
+    <p>Historiquement, produire une fake news demandait du temps et des compétences. Il fallait écrire un texte convaincant, retoucher une image, monter une vidéo ou truquer un enregistrement audio. Aujourd’hui, grâce aux outils d’intelligence artificielle, tout cela peut être réalisé en quelques clics.</p>
+    <p>Certains générateurs de texte peuvent rédiger un article entier en imitant parfaitement le style d’un journaliste connu. Des logiciels spécialisés créent des images réalistes ou des vidéos deepfake, reproduisant à l’identique le visage et la voix d’une personnalité publique. Ces contenus deviennent si crédibles que même des experts peuvent parfois avoir du mal à les identifier comme faux.</p>
+    <p>Le danger ne se limite pas à l’accessibilité de ces outils. L’intelligence artificielle permet aussi de personnaliser les fake news selon les publics visés. Les messages peuvent être adaptés en fonction de la localisation, des intérêts ou des opinions politiques des utilisateurs. Ainsi, chaque individu peut recevoir une version légèrement différente d’un même mensonge, renforçant la manipulation et rendant la désinformation encore plus pernicieuse.</p>
+
+    <h4 class="text-lg font-bold text-text mt-8 mb-3 uppercase border-l-4 border-primary pl-3">Les réseaux sociaux : accélérateurs involontaires</h4>
+    <p>Si l’IA facilite la création de fake news, les réseaux sociaux en assurent la diffusion. Les plateformes comme Facebook, Twitter ou Instagram utilisent des algorithmes pour sélectionner les contenus susceptibles de retenir l’attention de chaque utilisateur. Ces algorithmes privilégient les contenus émotionnels, ceux qui font rire, choquent ou inquiètent, car ils génèrent plus de clics, de partages et de commentaires.</p>
+    <p>Les fake news, par leur nature sensationnelle ou anxiogène, sont particulièrement favorisées par ce système. Elles circulent plus rapidement et plus largement que les informations vérifiées, souvent nuancées et factuelles. Certaines campagnes de désinformation sont même organisées pour exploiter cette dynamique. Des contenus manipulés, parfois créés par des acteurs étrangers, sont diffusés massivement à des moments stratégiques pour influencer l’opinion publique.</p>
+    <p>Cette amplification algorithmique a des conséquences concrètes. Elle peut renforcer les divisions sociales, polariser le débat public et diminuer la confiance dans les institutions. Les citoyens commencent à douter non seulement des médias, mais aussi des responsables politiques et des autorités, fragilisant le socle démocratique.</p>
+
+    <h4 class="text-lg font-bold text-text mt-8 mb-3 uppercase border-l-4 border-primary pl-3">Une menace pour la cohésion et la stabilité</h4>
+    <p>La multiplication des fake news n’est pas seulement un problème technique ou numérique. C’est une menace pour la cohésion sociale et la stabilité politique. Dans un pays comme la France, des informations manipulées peuvent créer des tensions entre différentes communautés, susciter des mouvements de panique ou alimenter des polémiques injustifiées.</p>
+    <p>Les fake news peuvent également être exploitées pour influencer les élections, discréditer des personnalités publiques ou orienter l’opinion sur des sujets sensibles. Lorsque ces contenus sont relayés par des milliers d’utilisateurs, même sans intention malveillante de leur part, l’impact devient considérable.</p>
+    <p>Les responsables politiques et les médias doivent redoubler de vigilance. La question ne se limite plus à savoir si une information est vraie ou fausse, mais à comprendre comment elle circule, qui la produit et dans quel but. L’intelligence artificielle, en accélérant ce processus, transforme la désinformation en un véritable outil de manipulation massive.</p>
+
+    <h4 class="text-lg font-bold text-text mt-8 mb-3 uppercase border-l-4 border-primary pl-3">Comment s’en protéger ?</h4>
+    <p>Face à ce défi, plusieurs mesures sont indispensables pour limiter l’impact des fake news.</p>
+
+    <h5 class="font-bold text-text mt-4 mb-2">Adopter une vigilance citoyenne</h5>
+    <p>Chaque utilisateur a un rôle à jouer. Avant de partager un contenu, il est essentiel de vérifier la source, recouper l’information avec plusieurs médias fiables, analyser le ton et les images pour détecter d’éventuelles manipulations, et se demander si le contenu n’est pas exagéré ou trop sensationnel pour être vrai. Cette démarche demande du temps et de l’esprit critique, mais elle est la première défense contre la désinformation.</p>
+
+    <h5 class="font-bold text-text mt-4 mb-2">Exiger plus de transparence des plateformes</h5>
+    <p>Les grandes entreprises numériques doivent être tenues responsables de la manière dont leurs algorithmes choisissent et diffusent les contenus. Une meilleure transparence sur le fonctionnement des systèmes d’IA et sur les méthodes de modération pourrait réduire considérablement la propagation des fake news.</p>
+
+    <h5 class="font-bold text-text mt-4 mb-2">Former les jeunes et les adultes</h5>
+    <p>L’éducation aux médias et aux technologies numériques doit être renforcée, dès le plus jeune âge et tout au long de la vie. Comprendre comment fonctionnent les IA génératives, les deepfakes et les algorithmes de recommandation est essentiel pour développer un esprit critique solide.</p>
+
+    <!-- Encart -->
+    <div class="bg-slate-50 p-6 rounded-lg my-8 border-l-4 border-secondary shadow-sm">
+        <h4 class="font-bold text-primary uppercase mb-3 text-sm tracking-wider">Avez-vous lu notre précédent dossier ?</h4>
+        <p class="text-sm mb-3 text-slate-600">Pour mieux comprendre le rôle des algorithmes et des réseaux sociaux dans la diffusion de l’information, nous vous invitons à consulter notre précédent article :</p>
+        <a href="#" class="text-text font-bold hover:text-primary hover:underline block mb-2 text-lg">Comprendre les algorithmes : comment les réseaux façonnent votre vision du monde.</a>
+        <p class="text-sm text-slate-500">Cet article explique comment vos habitudes de navigation influencent les contenus qui vous sont présentés et pourquoi certaines informations deviennent virales tandis que d’autres disparaissent.</p>
+    </div>
+
+    <h4 class="text-lg font-bold text-text mt-8 mb-3 uppercase border-l-4 border-primary pl-3">Conclusion</h4>
+    <p>L’intelligence artificielle n’est pas en soi une menace. Son potentiel pour améliorer nos vies et transformer nos sociétés est immense.</p>
+    <p>Le danger réside dans son utilisation détournée pour manipuler, polariser et tromper. La multiplication des fake news et leur diffusion accélérée par les réseaux sociaux constituent un défi majeur pour la démocratie, la cohésion sociale et la confiance des citoyens.</p>
+    <p>Face à cette réalité, chacun doit prendre ses responsabilités : rester vigilant, vérifier les sources, comprendre les algorithmes et soutenir une régulation transparente des plateformes numériques. La protection de l’information et de la vérité dépend autant des citoyens que des institutions.</p>
+
+    <div class="mt-10 pt-8 border-t border-slate-200">
+        <h4 class="font-black text-text uppercase mb-4 tracking-tight">Restez informés avec L’Hexagone</h4>
+        <p class="mb-4 text-slate-600">Pour ne rien manquer de nos enquêtes et analyses sur l’actualité française :</p>
+        <ul class="space-y-2 mb-6 text-sm font-medium text-slate-700">
+            <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-secondary"></i> Abonnez-vous à notre newsletter</li>
+            <li class="flex items-center gap-2"><i data-lucide="share-2" class="w-4 h-4 text-secondary"></i> Suivez-nous sur les réseaux sociaux</li>
+            <li class="flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-secondary"></i> Partagez cet article pour sensibiliser votre entourage à la désinformation</li>
+        </ul>
+        <p class="font-bold text-primary italic text-lg">"Votre vigilance est la première arme contre les fake news. Ensemble, protégeons la vérité."</p>
+    </div>
+`;
+
+        function openArticle(element) {
+            const modal = document.getElementById('articleModal');
+            const container = document.getElementById('modalContainer');
+            
+            // Récupération des données
+            const title = element.getAttribute('data-title') || "Titre indisponible";
+            const category = element.getAttribute('data-category') || "Actualité";
+            const image = element.getAttribute('data-image');
+            const date = element.getAttribute('data-date') || "Aujourd'hui";
+            const readTime = element.getAttribute('data-readtime') || "3 min";
+            const intro = element.getAttribute('data-intro') || "Accroche indisponible.";
+
+            // Injection
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalDate').textContent = date;
+            document.getElementById('modalReadTime').textContent = readTime;
+            document.getElementById('modalIntro').textContent = intro;
+            document.getElementById('modalBody').innerHTML = dummyContent;
+
+            // Gestion image (si absente, on met une couleur de fond)
+            const imgEl = document.getElementById('modalImage');
+            if (image) {
+                imgEl.src = image;
+                imgEl.classList.remove('hidden');
+                imgEl.parentElement.classList.remove('bg-primary');
+            } else {
+                imgEl.classList.add('hidden');
+                imgEl.parentElement.classList.add('bg-primary');
+            }
+
+            // Affichage
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Empêche le scroll de la page
+
+            // Réinitialisation du scroll tout en haut APRES l'affichage
+            const scrollContainer = container.querySelector('.scroll-container');
+            if (scrollContainer) {
+                scrollContainer.scrollTop = 0;
+            }
+
+            // Animation d'entrée
+            setTimeout(() => {
+                container.classList.remove('scale-95', 'opacity-0');
+                container.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('articleModal');
+            const container = document.getElementById('modalContainer');
+
+            // Animation de sortie
+            container.classList.remove('scale-100', 'opacity-100');
+            container.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Réactive le scroll
+            }, 300);
+        }
+
+        // Fermeture avec la touche Echap
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
